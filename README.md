@@ -4,15 +4,17 @@ This README provides an overview of the Degentkn ERC20 token implementation on t
 
 ## Overview
 
-Degentkn is a custom ERC20 token deployed on the Avalanche C-Chain, utilizing the OpenZeppelin library for security and standardization. The token, named "Degen" with the symbol "DGN," includes functionalities such as minting, burning, transferring, and redeeming tokens.
+Degentkn is a custom ERC20 token deployed on the Avalanche C-Chain, utilizing the OpenZeppelin library for security and standardization. The token, named "Degen" with the symbol "DGN," includes functionalities such as minting, burning, transferring, and redeeming tokens, additem,checkbalance.
 
 ## Features
 
-- **Minting**: Create new tokens and assign them to specific addresses.
-- **Burning**: Destroy tokens from specific addresses to reduce supply.
-- **Transferring**: Send tokens between addresses.
-- **Redeeming**: Redeem tokens by burning them from specific accounts.
-- **Balance Checking**: View the balance of tokens for the caller's address.
+- ERC20 Token Implementation : Built on the OpenZeppelin ERC20 library.
+- Minting Tokens : Allows minting tokens to specific addresses.
+- Burning Tokens : Allows burning tokens from specific addresses.
+- Transferring Tokens : Allows transferring tokens between addresses.
+- Token Redemption : Allows redeeming tokens by burning them from specific accounts.
+- Adding Items : Allows adding items with associated costs for token redemption.
+- Balance Check : Allows users to check their token balance.
 
 ## Token Details
 
@@ -45,14 +47,20 @@ The contract is implemented using Solidity and extends the OpenZeppelin ERC20 co
 6. **transferuser(address to, uint amount)**
    - Transfers `amount` of tokens from the caller's address to the `to` address.
    - Requires that the caller has sufficient balance.
+  
+7. redeemTokens(address _acc, uint _value)
 
-7. **redeemtkn(address _acc, uint _value)**
-   - Burns `_value` amount of tokens from the `_acc` address.
+   - Burns _value amount of tokens from the _acc address for redemption purposes.
    - Requires that the caller has sufficient balance.
+   - addItem(string calldata itemName, uint256 cost)
+
+8. Adds an item with an associated token cost to the contract.
+   - The item is stored using a hashed version of its name (keccak256).
+   - Ensures that the cost is greater than zero before adding the item.
 
 ## Deployment
 
-The contract should be deployed on the Avalanche C-Chain, a part of the Avalanche network designed for smart contract functionality. The C-Chain is compatible with the Ethereum Virtual Machine (EVM), making it ideal for deploying Solidity-based contracts.
+The contract is designed for deployment on the Avalanche C-Chain, a part of the Avalanche network optimized for smart contracts and compatible with the Ethereum Virtual Machine (EVM). Avalanche C-Chain provides high throughput, low fees, and EVM compatibility, making it ideal for Solidity-based contracts.
 
 ## License
 
