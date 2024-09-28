@@ -1,39 +1,65 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
-contract Degentkn is ERC20 {
-    // Constructor used to initialize  token with a name and symbol 
-    constructor() ERC20("Degen", "DGN") {
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract Token is ERC20 {
+    // Mapping of item names to their cost in tokens
+    mapping(string => uint256) public itemCosts;
+
+    // Constructor to initialize the token with a name and symbol
+    constructor() ERC20("TIKI", "TKI") {
+        // Mint 10 tokens initially
+        _mint(msg.sender, 10 * 10 ** decimals()); // Corrected minting with decimals
     }
-    // decimals function to set the number of decimal places to 10
+
+    // Decimals function to set the number of decimal places to 10
     function decimals() public pure override returns (uint8) {
         return 10;
     }
-     // Function to mint new tokens and assign them to a specific address
-    function mintTokens(address acc, uint value) public {
+
+    // Function to mint new tokens and assign them to a specific address
+    function mintTokens(address acc, uint256 value) public {
         _mint(acc, value);
     }
+
     // Function to burn (destroy) tokens from a specific address
-    function burn(address acc , uint value) public {
-        require(value < balanceOf(msg.sender),"insufficient balance");
-        _burn(acc , value);
+    function burn(address acc, uint256 value) public {
+        _burn(acc, value);
     }
+
+    // Function to transfer tokens to a specific address
+    function transferTokens(address to, uint256 value) public {
+        transfer(to, value);
+    }
+
     // Function to check the balance of tokens
     function checkBalance() public view returns (uint256) {
-        return this.balanceOf(msg.sender);
+        return balanceOf(msg.sender);
     }
-    // Function to transfer tokens from one address to another
-    function transferuser(address to, uint amount) public {
-        require(amount < balanceOf(msg.sender),"insufficient balance");
-        transfer(to, amount);
+
+    // Function to redeem tokens for an item (without emitting an event)
+    function redeemTokens(string calldata itemName, uint256 value) external {
+        require(itemCosts[itemName] > 0, "Item does not exist");
+        require(balanceOf(msg.sender) >= value, "Insufficient balance");
+        require(value >= itemCosts[itemName], "Value does not match item cost");
+
+        _burn(msg.sender, value); // Burn the specified amount
+        // No event emitted
     }
-    // Function to redeem tokens
-    function redeemtkn(address _acc, uint _value) public {
-        require(balanceOf(msg.sender) >= _value, "insufficient balance");
-        _burn(_acc, _value);
+
+    // Function to add an item with its cost
+    function addItem(string calldata itemName, uint256 cost) external {
+        require(cost > 0, "Cost must be greater than zero");
+        itemCosts[itemName] = cost;
     }
 }
+
+
+
+
+
+
 
 
 
