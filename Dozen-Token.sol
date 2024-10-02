@@ -7,10 +7,13 @@ contract Token is ERC20 {
     // Mapping of item names to their cost in tokens
     mapping(string => uint256) public itemCosts;
 
+    // Event to track successful redemptions
+    event TokensRedeemed(address indexed user, string itemName, uint256 value);
+
     // Constructor to initialize the token with a name and symbol
     constructor() ERC20("TIKI", "TKI") {
         // Mint 10 tokens initially
-        _mint(msg.sender, 10 * 10 ** decimals()); // Corrected minting with decimals
+        _mint(msg.sender, 10 * 10 ** decimals());
     }
 
     // Decimals function to set the number of decimal places to 10
@@ -30,7 +33,7 @@ contract Token is ERC20 {
 
     // Function to transfer tokens to a specific address
     function transferTokens(address to, uint256 value) public {
-        transfer(to, value);
+        _transfer(msg.sender, to, value); // Correct the internal transfer
     }
 
     // Function to check the balance of tokens
@@ -38,14 +41,14 @@ contract Token is ERC20 {
         return balanceOf(msg.sender);
     }
 
-    // Function to redeem tokens for an item (without emitting an event)
+    // Function to redeem tokens for an item (with event emission)
     function redeemTokens(string calldata itemName, uint256 value) external {
         require(itemCosts[itemName] > 0, "Item does not exist");
         require(balanceOf(msg.sender) >= value, "Insufficient balance");
         require(value >= itemCosts[itemName], "Value does not match item cost");
 
         _burn(msg.sender, value); // Burn the specified amount
-        // No event emitted
+        emit TokensRedeemed(msg.sender, itemName, value); // Emit event
     }
 
     // Function to add an item with its cost
@@ -54,6 +57,8 @@ contract Token is ERC20 {
         itemCosts[itemName] = cost;
     }
 }
+
+
 
 
 
